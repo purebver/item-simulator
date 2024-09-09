@@ -4,7 +4,7 @@ import { Prisma } from '@prisma/client';
 
 const router = express.Router();
 
-router.post('/item-create', async (req, res, next) => {
+router.post('/item/create', async (req, res, next) => {
   try {
     const { name, information, itemType, rarity, baseState, price } = req.body;
 
@@ -34,7 +34,7 @@ router.post('/item-create', async (req, res, next) => {
   }
 });
 
-router.patch('/item-renewal/:itemId', async (req, res, next) => {
+router.patch('/item/renewal/:itemId', async (req, res, next) => {
   try {
     const { itemId } = req.params;
     const updatedData = req.body;
@@ -44,7 +44,9 @@ router.patch('/item-renewal/:itemId', async (req, res, next) => {
     const item = await prisma.items.findFirst({
       where: { itemId: +itemId },
     });
-
+    if (!item) {
+      return res.status(404).json({ message: '아이템이 존재하지 않습니다.' });
+    }
     await prisma.$transaction(async (tx) => {
       await tx.items.update({
         data: { ...updatedData },
@@ -89,10 +91,14 @@ router.get('/item/:itemId', async (req, res, next) => {
     select: {
       itemId: true,
       name: true,
+      information: true,
       baseState: true,
       price: true,
     },
   });
+  if (!item) {
+    return res.status(404).json({ message: '아이템이 존재하지 않습니다.' });
+  }
   return res.status(200).json({ item });
 });
 

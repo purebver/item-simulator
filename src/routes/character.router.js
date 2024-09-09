@@ -2,13 +2,10 @@ import express from 'express';
 import { prisma } from '../utils/prisma/index.js';
 import { Prisma } from '@prisma/client';
 import authMiddleware from '../middlewares/auth.middleware.js';
-import dotenv from 'dotenv';
-
-dotenv.config();
 
 const router = express.Router();
 
-router.post('/character-create', authMiddleware, async (req, res, next) => {
+router.post('/character/create', authMiddleware, async (req, res, next) => {
   try {
     const { name } = req.body;
     const userId = req.user.userId;
@@ -68,7 +65,7 @@ router.post('/character-create', authMiddleware, async (req, res, next) => {
 });
 
 router.delete(
-  '/character-delete/:characterId',
+  '/character/delete/:characterId',
   authMiddleware,
   async (req, res, next) => {
     try {
@@ -76,9 +73,15 @@ router.delete(
       const del_Id = await prisma.characters.findFirst({
         where: { characterId: +characterId },
       });
+
       if (!del_Id) {
         return res.status(404).json({ message: '캐릭터가 존재하지 않습니다.' });
       }
+
+      if (del_Id.userId !== req.user.userId) {
+        return res.status(403).json({ message: '유효한 토큰이 아닙니다.' });
+      }
+
       const character_delete = await prisma.$transaction(async (tx) => {
         const character = await tx.characters.delete({
           where: { characterId: +characterId },
@@ -92,7 +95,7 @@ router.delete(
 );
 
 router.get(
-  '/character-check/:characterId',
+  '/character/check/:characterId',
   async (req, res, next) => {
     const { authorization } = req.headers;
     const { characterId } = req.params;
@@ -102,8 +105,12 @@ router.get(
         characterId: true,
         name: true,
         state: true,
+        userId: true,
       },
     });
+    if (!character) {
+      return res.status(404).json({ message: '캐릭터가 존재하지 않습니다.' });
+    }
     if (!authorization) {
       return res.status(200).json({ data: character });
     }
@@ -111,6 +118,9 @@ router.get(
     authMiddleware(req, res, next);
   },
   async (req, res, next) => {
+    if (req.user.userId !== req.character.userId) {
+      return res.status(403).json({ message: '유효한 토큰이 아닙니다.' });
+    }
     const inventory = await prisma.inventory.findFirst({
       where: { characterId: req.character.characterId },
       select: {
