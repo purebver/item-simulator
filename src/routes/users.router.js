@@ -83,7 +83,7 @@ router.post('/sign-in', async (req, res, next) => {
   res.setHeader('Authorization', `Bearer ${token}`);
   return res.status(200).json({
     message: '로그인에 성공하였습니다.',
-    token,
+    token: `Bearer ${token}`,
   });
 });
 
