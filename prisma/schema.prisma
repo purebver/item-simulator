@@ -1,0 +1,98 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Users {
+  userId Int @id @default(autoincrement()) @map("userId")
+  name String @map("name")
+  email String @map("email")
+  id String @unique @map("id")
+  password String @map("password")
+  createdAt DateTime @default(now()) @map("createdAt")
+  updatedAt DateTime @updatedAt @map("updatedAt")
+  
+
+  characters Characters[]
+
+  @@map("Users")
+}
+
+model Characters {
+  characterId Int @id @default(autoincrement()) @map("characterId")
+  userId Int @map("userId")
+  name String @unique @map("name")
+  state Json @map("state")
+  createdAt DateTime @default(now()) @map("createdAt")
+  updatedAt DateTime @updatedAt @map("updatedAt")
+
+  user Users @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  inventory Inventory?
+  equipment Equipment?
+
+  @@map("Characters")
+}
+
+model Inventory {
+  inventoryId Int @id @default(autoincrement()) @map("inventoryId")
+  characterId Int @unique @map("characterId")
+  maxSlots Int @default(20) @map("maxSlots")
+  money Int @map("money")
+
+  characters Characters @relation(fields: [characterId], references: [characterId], onDelete: Cascade)
+  slots InventorySlot[]
+
+  @@map("Inventory")
+}
+
+model InventorySlot {
+  inventorySlotId Int @id @default(autoincrement()) @map("inventorySlotId")
+  inventoryId Int @map("inventoryId")
+  itemId Int? @map("itemId")
+  slotNumber Int @map("slotNumber")
+  
+
+  @@unique([inventoryId, slotNumber])
+
+
+  inventory Inventory @relation(fields: [inventoryId], references: [inventoryId], onDelete: Cascade)
+
+  @@map("InventorySlot")
+}
+
+model Equipment {
+  equipmentId Int @id @default(autoincrement()) @map("equipmentId")
+  characterId Int @unique @map("characterId")
+  slot_head Int? @map("slot_head")
+  slot_body Int? @map("slot_body")
+  slot_arms Int? @map("slot_arms")
+  slot_weapon Int? @map("slot_weapon")
+  slot_shoes Int? @map("slot_shoes")
+
+  characters Characters @relation(fields: [characterId], references: [characterId], onDelete: Cascade)
+
+  @@map("Equipment")
+}
+
+model Items {
+  itemId Int @id @default(autoincrement()) @map("itemId")
+  name String @map("name")
+  information String? @map("information")
+  itemType String? @map("itemType")
+  rarity String? @default("Normal") @map("rarity")
+  baseState Json @map("baseState")
+  price Int @default(0) @map("price")
+
+  @@map("Items")
+}
