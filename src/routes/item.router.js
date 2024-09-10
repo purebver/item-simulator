@@ -44,9 +44,6 @@ router.patch('/item/renewal/:itemId', async (req, res, next) => {
     const item = await prisma.items.findFirst({
       where: { itemId: +itemId },
     });
-    if (!item) {
-      return res.status(404).json({ message: '아이템이 존재하지 않습니다.' });
-    }
     await prisma.$transaction(async (tx) => {
       await tx.items.update({
         data: { ...updatedData },
@@ -97,7 +94,7 @@ router.get('/item/:itemId', async (req, res, next) => {
     },
   });
   if (!item) {
-    return res.status(404).json({ message: '아이템이 존재하지 않습니다.' });
+    return res.status(404).json({ message: '선택한 대상을 찾을 수 없습니다.' });
   }
   return res.status(200).json({ item });
 });

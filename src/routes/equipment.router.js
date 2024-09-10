@@ -6,43 +6,44 @@ import authMiddleware from '../middlewares/auth.middleware.js';
 const router = express.Router();
 
 router.get('/equipment/:characterId', async (req, res, next) => {
-  const { characterId } = req.params;
-  const character = await prisma.characters.findFirst({
-    where: { characterId: +characterId },
-  });
-  if (!character) {
-    return res.status(404).json({ message: '캐릭터가 존재하지 않습니다.' });
-  }
-  const equipment = await prisma.equipment.findFirst({
-    where: { characterId: +characterId },
-    select: {
-      arms: true,
-      body: true,
-      head: true,
-      shoes: true,
-      weapon: true,
-    },
-  });
-  const arr = [];
-  for (let key in equipment) {
-    if (equipment[key] !== null) {
-      arr.push(key);
-    }
-  }
-  const result = {};
-  for (let i = 0; i < arr.length; i++) {
-    const item = await prisma.items.findFirst({
-      where: { itemId: equipment[arr[i]] },
+  try {
+    const { characterId } = req.params;
+    const character = await prisma.characters.findFirst({
+      where: { characterId: +characterId },
+    });
+    const equipment = await prisma.equipment.findFirst({
+      where: { characterId: character.characterId },
       select: {
-        itemId: true,
-        name: true,
-        rarity: true,
-        baseState: true,
+        arms: true,
+        body: true,
+        head: true,
+        shoes: true,
+        weapon: true,
       },
     });
-    result[arr[i]] = item;
+    const arr = [];
+    for (let key in equipment) {
+      if (equipment[key] !== null) {
+        arr.push(key);
+      }
+    }
+    const result = {};
+    for (let i = 0; i < arr.length; i++) {
+      const item = await prisma.items.findFirst({
+        where: { itemId: equipment[arr[i]] },
+        select: {
+          itemId: true,
+          name: true,
+          rarity: true,
+          baseState: true,
+        },
+      });
+      result[arr[i]] = item;
+    }
+    return res.status(200).json({ result });
+  } catch (err) {
+    next(err);
   }
-  return res.status(200).json({ result });
 });
 
 router.post(
@@ -55,9 +56,6 @@ router.post(
       const character = await prisma.characters.findFirst({
         where: { characterId: +characterId },
       });
-      if (!character) {
-        return res.status(404).json({ message: '캐릭터가 존재하지 않습니다.' });
-      }
       if (userId !== character.userId) {
         return res
           .status(403)
@@ -143,9 +141,6 @@ router.post(
       const character = await prisma.characters.findFirst({
         where: { characterId: +characterId },
       });
-      if (!character) {
-        return res.status(404).json({ message: '캐릭터가 존재하지 않습니다.' });
-      }
       if (userId !== character.userId) {
         return res
           .status(403)

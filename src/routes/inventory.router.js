@@ -8,29 +8,32 @@ router.get(
   '/inventory/:characterId',
   authMiddleware,
   async (req, res, next) => {
-    const userId = req.user.userId;
-    const { characterId } = req.params;
-    const character = await prisma.characters.findFirst({
-      where: { characterId: +characterId },
-    });
-    if (!character) {
-      return res.status(404).json({ message: '캐릭터가 존재하지 않습니다.' });
+    try {
+      const userId = req.user.userId;
+      const { characterId } = req.params;
+      const character = await prisma.characters.findFirst({
+        where: { characterId: +characterId },
+      });
+      if (userId !== character.userId) {
+        return res
+          .status(403)
+          .json({ message: '유효한 액세스토큰이 아닙니다.' });
+      }
+      const inventory = await prisma.inventory.findFirst({
+        where: { characterId: +characterId },
+      });
+      const inventorySlot = await prisma.inventorySlot.findMany({
+        select: {
+          slotNumber: true,
+          itemId: true,
+          quantity: true,
+        },
+        where: { inventoryId: inventory.inventoryId },
+      });
+      return res.status(200).json({ inventorySlot, money: inventory.money });
+    } catch (err) {
+      next(err);
     }
-    if (userId !== character.userId) {
-      return res.status(403).json({ message: '유효한 액세스토큰이 아닙니다.' });
-    }
-    const inventory = await prisma.inventory.findFirst({
-      where: { characterId: +characterId },
-    });
-    const inventorySlot = await prisma.inventorySlot.findMany({
-      select: {
-        slotNumber: true,
-        itemId: true,
-        quantity: true,
-      },
-      where: { inventoryId: inventory.inventoryId },
-    });
-    return res.status(200).json({ inventorySlot, money: inventory.money });
   }
 );
 

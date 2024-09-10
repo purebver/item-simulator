@@ -75,10 +75,6 @@ router.delete(
         where: { characterId: +characterId },
       });
 
-      if (!del_Id) {
-        return res.status(404).json({ message: '캐릭터가 존재하지 않습니다.' });
-      }
-
       if (del_Id.userId !== req.user.userId) {
         return res.status(403).json({ message: '유효한 토큰이 아닙니다.' });
       }
@@ -98,42 +94,47 @@ router.delete(
 router.get(
   '/character/check/:characterId',
   async (req, res, next) => {
-    const { authorization } = req.headers;
-    const { characterId } = req.params;
-    const character = await prisma.characters.findFirst({
-      where: { characterId: +characterId },
-      select: {
-        characterId: true,
-        name: true,
-        state: true,
-        userId: true,
-      },
-    });
-    if (!character) {
-      return res.status(404).json({ message: '캐릭터가 존재하지 않습니다.' });
+    try {
+      const { authorization } = req.headers;
+      const { characterId } = req.params;
+      const character = await prisma.characters.findFirst({
+        where: { characterId: +characterId },
+        select: {
+          characterId: true,
+          name: true,
+          state: true,
+          userId: true,
+        },
+      });
+      if (!authorization) {
+        return res.status(200).json({ data: character });
+      }
+      req.character = character;
+      authMiddleware(req, res, next);
+    } catch (err) {
+      next(err);
     }
-    if (!authorization) {
-      return res.status(200).json({ data: character });
-    }
-    req.character = character;
-    authMiddleware(req, res, next);
   },
   async (req, res, next) => {
-    if (req.user.userId !== req.character.userId) {
-      return res.status(403).json({ message: '유효한 토큰이 아닙니다.' });
+    try {
+      if (req.user.userId !== req.character.userId) {
+        return res.status(403).json({ message: '유효한 토큰이 아닙니다.' });
+      }
+      const inventory = await prisma.inventory.findFirst({
+        where: { characterId: req.character.characterId },
+        select: {
+          money: true,
+        },
+      });
+      return res.status(200).json({
+        data: {
+          ...req.character,
+          money: inventory.money,
+        },
+      });
+    } catch (err) {
+      next(err);
     }
-    const inventory = await prisma.inventory.findFirst({
-      where: { characterId: req.character.characterId },
-      select: {
-        money: true,
-      },
-    });
-    return res.status(200).json({
-      data: {
-        ...req.character,
-        money: inventory.money,
-      },
-    });
   }
 );
 

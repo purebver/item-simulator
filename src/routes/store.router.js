@@ -127,9 +127,6 @@ router.post(
       const character = await prisma.characters.findFirst({
         where: { characterId: +characterId },
       });
-      if (!character) {
-        return res.status(404).json({ message: '캐릭터가 존재하지 않습니다.' });
-      }
       if (character.userId !== req.user.userId) {
         return res
           .status(403)
@@ -143,7 +140,7 @@ router.post(
         res.status(404).json({ message: '아이템이 존재하지 않습니다.' });
       }
       const inventory = await prisma.inventory.findFirst({
-        where: { characterId: +characterId },
+        where: { characterId: character.characterId },
       });
       let inventorySlot = await prisma.inventorySlot.findFirst({
         where: {
@@ -210,9 +207,6 @@ router.post(
       const character = await prisma.characters.findFirst({
         where: { characterId: +characterId },
       });
-      if (!character) {
-        return res.status(404).json({ message: '캐릭터가 존재하지 않습니다.' });
-      }
       if (character.userId !== req.user.userId) {
         return res
           .status(403)
@@ -226,7 +220,7 @@ router.post(
         res.status(404).json({ message: '아이템이 존재하지 않습니다.' });
       }
       const inventory = await prisma.inventory.findFirst({
-        where: { characterId: +characterId },
+        where: { characterId: character.characterId },
       });
       const inventorySlot = await prisma.inventorySlot.findFirst({
         where: {
