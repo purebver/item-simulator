@@ -219,3 +219,6 @@
   }
 
   => 토큰이 body에 전달됨
+***
+### 3. 그외
+- DB관계는 prisma/schema.prisma파일을 참조
