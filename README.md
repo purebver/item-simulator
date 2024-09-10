@@ -1,5 +1,7 @@
 # item-simulator
-
+### 0. DB_Diagram
+![스크린샷 2024-09-10 224437](https://github.com/user-attachments/assets/ab0f1e84-01ac-4168-bde2-932d39ca5133)
+***
 ### 1. 프로젝트 구성
 ***
 1. src/
