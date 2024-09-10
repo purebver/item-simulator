@@ -1,14 +1,17 @@
 # item-simulator
 
-### 프로젝트 구성
+### 1. 프로젝트 구성
 ***
-1. /middlewares/
+1. src/
+- app: 메인서버 실행 파일
+***
+2. src/middlewares/
 
 - auth.middleware: 토큰 인증 관리
 - error-handling.middleware: 예상치못한 에러, 여러군대에서 발생 할 만한 에러 통합 처리
 - log.middleware: 응답 완료 후 기록을 콘솔에 표시
 ***
-2. /routes/
+3. src/routes/
 
 - character: 캐릭터 생성, 삭제, 조회
 - equipment: 장비의 탈부착, 특정 캐릭터의 장비 조회
@@ -18,7 +21,10 @@
 - store: 상점 아이템 조회, 구입, 판매
 - users: 회원가입, 로그인(토큰 발급)
 ***
-### 프로젝트 사용법
+4. src/utils/prisma
+- index: prisma 작동 시 콘솔에 찍힐 로그를 설정
+***
+### 2. 프로젝트 사용법
 ***
 1. character: 캐릭터 생성, 삭제, 조회
 
