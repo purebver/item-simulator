@@ -9,41 +9,13 @@ import StoreRouter from './routes/store.router.js';
 import InventoryRouter from './routes/inventory.router.js';
 import EquipmentRouter from './routes/equipment.router.js';
 import ScarecrowRouter from './routes/scarecrow.router.js';
-// import dotenv from 'dotenv';
-// import expressSession from 'express-session';
-// import expressMySQLSeeion from 'express-mysql-session';
-
-// dotenv.config();
 
 const app = express();
 const PORT = 3000;
 
-// const MySQLStorage = expressMySQLSeeion(expressSession);
-// const sessionStorage = new MySQLStorage({
-//   user: process.env.DATABASE_USERNAME,
-//   password: process.env.DATABASE_PASSWORD,
-//   host: process.env.DATABASE_HOST,
-//   port: process.env.DATABASE_PORT,
-//   database: process.env.DATABASE_NAME,
-//   expiration: 1000 * 60 * 60 * 24, //1일
-//   createDatabaseTable: true,
-// });
-
 app.use(LogMiddleware);
 app.use(express.json());
 app.use(cookieParser());
-
-// app.use(
-//   expressSession({
-//     secret: process.env.SECRET_KEY,
-//     resave: false,
-//     saveUninitialized: false,
-//     cookie: {
-//       maxAge: 1000 * 60 * 60 * 24,
-//     },
-//     store: sessionStorage,
-//   })
-// );
 
 app.use('/api', [
   UsersRouter,
