@@ -5,7 +5,7 @@ import authMiddleware from '../middlewares/auth.middleware.js';
 
 const router = express.Router();
 
-//캐릭터 생성, 토큰 검사 필요
+//캐릭터 생성, 토큰 인증 필요
 router.post('/character/create', authMiddleware, async (req, res, next) => {
   try {
     //생성할 캐릭터의 이름을 바디로 받아옴 캐릭터id는 자동할당
@@ -74,7 +74,7 @@ router.post('/character/create', authMiddleware, async (req, res, next) => {
   }
 });
 
-//캐릭터 삭제, 토큰 검사 필요
+//캐릭터 삭제, 토큰 인증 필요
 router.delete(
   '/character/delete/:characterId',
   authMiddleware,
@@ -112,7 +112,7 @@ router.delete(
   }
 );
 
-//캐릭터 조회, 토큰이 있을경우 검사 후 추가 정보 제공
+//캐릭터 조회, 토큰이 있을경우 인증 후 추가 정보 제공
 router.get(
   '/character/check/:characterId',
   async (req, res, next) => {
