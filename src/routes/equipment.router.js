@@ -97,9 +97,7 @@ router.post(
                   : inventorySlot.quantity - 1,
             },
             where: {
-              inventoryId: inventory.inventoryId,
               inventorySlotId: inventorySlot.inventorySlotId,
-              slotNumber: inventorySlot.slotNumber,
             },
           });
           const equipment_update = await tx.equipment.update({
@@ -108,11 +106,16 @@ router.post(
             },
             where: { characterId: +characterId },
           });
+          let power =
+            item.baseState.power === undefined ? 0 : item.baseState.power;
+          let health =
+            item.baseState.health === undefined ? 0 : item.baseState.health;
+
           const character_update = await tx.characters.update({
             data: {
               state: {
-                power: character.state.power + item.baseState.power,
-                health: character.state.health + item.baseState.health,
+                power: character.state.power + power,
+                health: character.state.health + health,
               },
             },
             where: { characterId: +characterId },
@@ -195,9 +198,7 @@ router.post(
                   : inventorySlot.quantity + 1,
             },
             where: {
-              inventoryId: inventory.inventoryId,
               inventorySlotId: inventorySlot.inventorySlotId,
-              slotNumber: inventorySlot.slotNumber,
             },
           });
           const equipment_update = await tx.equipment.update({
@@ -206,11 +207,15 @@ router.post(
             },
             where: { characterId: +characterId },
           });
+          let power =
+            item.baseState.power === undefined ? 0 : item.baseState.power;
+          let health =
+            item.baseState.health === undefined ? 0 : item.baseState.health;
           const character_update = await tx.characters.update({
             data: {
               state: {
-                power: character.state.power - item.baseState.power,
-                health: character.state.health - item.baseState.health,
+                power: character.state.power - power,
+                health: character.state.health - health,
               },
             },
             where: { characterId: +characterId },
