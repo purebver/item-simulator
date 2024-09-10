@@ -22,19 +22,19 @@
 
 1. character: 캐릭터 생성, 삭제, 조회
 
-> - 캐릭터 생성: /api/character/create
+- 캐릭터 생성: /api/character/create
 
-Authorization 헤더 토큰 필요
+  Authorization 헤더 토큰 필요
 
-JSON{
+  JSON{
 
-"name": "sparta1"
+  "name": "sparta1"
 
-}
+  }
 
-=> "message": "ID:4 name:sparta1 캐릭터 생성이 완료되었습니다"
+  => "message": "ID:4 name:sparta1 캐릭터 생성이 완료되었습니다"
 
-=> 캐릭터의 id가 전달됨
+  => 캐릭터의 id가 전달됨
 
 - 캐릭터 삭제: /api/character/delete/:characterId
 
