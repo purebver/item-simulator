@@ -161,7 +161,7 @@ router.post(
         },
       });
 
-      //인벤토리 슬롯이 undefinded면 빈공간을 찾아 조회
+      //인벤토리 슬롯이 undefined면 빈공간을 찾아 조회
       if (!inventorySlot) {
         inventorySlot = await prisma.inventorySlot.findFirst({
           where: {

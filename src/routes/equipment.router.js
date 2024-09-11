@@ -192,7 +192,7 @@ router.post(
         },
       });
 
-      //equipment가 undefinded면 key(부위)는 장착중이지 않다는 뜻. 에러응답
+      //equipment가 undefined면 key(부위)는 장착중이지 않다는 뜻. 에러응답
       if (!equipment) {
         return res
           .status(400)
