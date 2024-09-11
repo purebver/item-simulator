@@ -96,7 +96,7 @@
 
   Authorization 헤더 토큰 필요
 
-  - body 필수요소: 장착 부위를 나타내는 equipment의 field(arms, body, head, shoes, weapon)의 값 null
+  - body 필수요소: 장착 부위를 나타내는 equipment의 컬럼(arms, body, head, shoes, weapon)의 값 null
 
   - 하나씩만 탈착 가능
 
@@ -134,7 +134,7 @@
 
   - body 필수요소: name, itemtype, baseState
 
-  - itemtype은 장착 부위를 나타내는 equipment의 field(arms, body, head, shoes, weapon)
+  - itemtype은 장착 부위를 나타내는 equipment의 컬럼(arms, body, head, shoes, weapon)
 
   - price는 안적을 경우 0
 
