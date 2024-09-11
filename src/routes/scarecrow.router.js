@@ -14,7 +14,7 @@ router.post('/scarecrow/:characterId', async (req, res, next) => {
       where: { characterId: +characterId },
     });
 
-    //캐릭터id로 인벤토리 조회(money가 인벤토리의 필드)
+    //캐릭터id로 인벤토리 조회(money가 인벤토리의 컬럼)
     const inventory = await prisma.inventory.findFirst({
       where: { characterId: character.characterId },
     });
