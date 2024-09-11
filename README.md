@@ -281,3 +281,5 @@
 ### 3. 그외
 
 - DB관계는 prisma/schema.prisma파일을 참조
+
+- items테이블에는 기본 14개의 데이터가 있음 itemId:1 ~ 14
